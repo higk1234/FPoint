@@ -3,7 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define F (50)          //読み込むファイルの１行の長さ
+#define F (50)
 #define H (9)
 struct HANDAN {
     char handan_name[F];
@@ -68,34 +68,34 @@ int main()
     long kikan;
     bool find;
     int i = 0,  h = 0;
-    int han_ctr = 0;                                //han[N]に登録した件数
+    int han_ctr = 0; 
     fp = fopen("log.txt", "r");
 
     while (fgets(s, F, fp) != NULL) {
         cp = strtok(s, sikiri);
         if (cp == NULL) continue;
-        log.time = atol(cp);                    //ここで時間を挿入、文字列から数に変換
+        log.time = atol(cp);   
         cp = strtok(NULL, sikiri);
         if (cp == NULL) continue;
-        strcpy(log.server_name, cp);            //ここでサーバーの名前を挿入
+        strcpy(log.server_name, cp);           
         cp = strtok(NULL, sikiri);
         if (cp == NULL) continue;
-        strcpy(log.result, cp);                 //ここで結果を挿入
-        if (strncmp(log.result, "-",1) == 0) {     //1."-"かどうか
+        strcpy(log.result, cp);     
+        if (strncmp(log.result, "-",1) == 0) {   
             find = false;
-            for (h = 0; h < han_ctr; h++){      //判断テーブル検索
+            for (h = 0; h < han_ctr; h++){    
                 if (strcmp(log.server_name, han[h].handan_name) == 0){
                     find = true;
                     break;
                 }
             }
-            //判断テーブル上にサーバーが存在しない場合
+           
             if (find == false){
-                if (han_ctr >= H){  //上限オーバーなら、次のログの読み込みへ
+                if (han_ctr >= H){  
                     printf("判断テーブル上限:%d オーバー |%ld|%s|の故障監視をスキップ\n",H,log.time,log.server_name);
                     continue;
                 }
-                //判断テーブルに新規登録（値は初期値）
+                
                 h = han_ctr;
                 strcpy(han[h].handan_name,log.server_name);
                 han[h].count = false;
@@ -103,9 +103,9 @@ int main()
                 han[h].kaisuu = 0;
                 han_ctr++;
             }
-            han[h].kaisuu++;    //回数カウントアップ
-            if (han[h].count == false){ //故障中でなければ、故障中にし、時刻を登録する。
-                                        //故障中ならなにもしない。（回数カウントアップのみ）
+            han[h].kaisuu++;    
+            if (han[h].count == false){ 
+                                        
                 han[h].count = true;
                 han[h].time = log.time;
 printf("サーバー%sが故障状態です\n",
@@ -115,10 +115,10 @@ printf("サーバー%sが故障状態です\n",
                         printTime(kikan);
             }
         }else{
-            //"-"以外のケース
+           
             for (h = 0; h < han_ctr; h++) {
-                if (strcmp(log.server_name, han[h].handan_name) == 0) { //入力された値がどれかと一緒なら検索終了
-                    if (han[h].count == true){   //故障中なら故障状況をプリント
+                if (strcmp(log.server_name, han[h].handan_name) == 0) { 
+                    if (han[h].count == true){   
                         kikan = log.time - han[h].time;
                         printf("サーバー%sが故障状態です\n",
                                han[h].handan_name);
@@ -127,7 +127,7 @@ printf("サーバー%sが故障状態です\n",
                         printTime(kikan);
                         han[h].count = false;
                     }
-                    continue;                   //次のログの読み込みへ
+                    continue;           
                 }
             }
         }
